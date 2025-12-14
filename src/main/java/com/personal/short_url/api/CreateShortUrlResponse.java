@@ -1,2 +1,6 @@
-package com.personal.short_url.api;public class CreateShortUrlResponse {
-}
+package com.personal.short_url.api;
+
+public record CreateShortUrlResponse(
+	String shortKey
+)
+{}
