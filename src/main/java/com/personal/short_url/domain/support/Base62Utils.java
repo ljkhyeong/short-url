@@ -1,6 +1,4 @@
-package com.personal.short_url.domain;
-
-import org.springframework.stereotype.Component;
+package com.personal.short_url.domain.support;
 
 public class Base62Utils {
 	private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

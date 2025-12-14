@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.personal.short_url.api.dto.CreateShortUrlRequest;
+import com.personal.short_url.api.dto.CreateShortUrlResponse;
 import com.personal.short_url.application.ShortUrlService;
 
 import jakarta.validation.Valid;

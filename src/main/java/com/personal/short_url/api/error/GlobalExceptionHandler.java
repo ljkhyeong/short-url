@@ -1,10 +1,12 @@
-package com.personal.short_url.infrastructure;
+package com.personal.short_url.api.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.personal.short_url.application.exception.NotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +23,6 @@ public class GlobalExceptionHandler {
 		String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		return ResponseEntity
 			.status(HttpStatus.BAD_REQUEST)
-			.body(new ErrorResponse("BAD_REQUEST", e.getMessage()));
+			.body(new ErrorResponse("BAD_REQUEST", message));
 	}
 }

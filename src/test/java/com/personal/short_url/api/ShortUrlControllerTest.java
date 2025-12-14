@@ -12,8 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.personal.short_url.api.dto.CreateShortUrlRequest;
 import com.personal.short_url.application.ShortUrlService;
-import com.personal.short_url.infrastructure.NotFoundException;
+import com.personal.short_url.application.exception.NotFoundException;
 
 import tools.jackson.databind.ObjectMapper;
 

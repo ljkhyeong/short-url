@@ -8,13 +8,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.personal.short_url.domain.Base62Utils;
+import com.personal.short_url.domain.support.Base62Utils;
 import com.personal.short_url.domain.entity.ShortUrl;
 import com.personal.short_url.infrastructure.persistence.ShortUrlRepository;
 

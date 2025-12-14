@@ -3,9 +3,9 @@ package com.personal.short_url.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.personal.short_url.domain.Base62Utils;
+import com.personal.short_url.domain.support.Base62Utils;
 import com.personal.short_url.domain.entity.ShortUrl;
-import com.personal.short_url.infrastructure.NotFoundException;
+import com.personal.short_url.application.exception.NotFoundException;
 import com.personal.short_url.infrastructure.persistence.ShortUrlRepository;
 
 import lombok.RequiredArgsConstructor;

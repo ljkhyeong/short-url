@@ -2,9 +2,10 @@ package com.personal.short_url.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.personal.short_url.domain.support.Base62Utils;
 
 public class Base62UtilsTest {
 

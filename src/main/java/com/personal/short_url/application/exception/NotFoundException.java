@@ -1,4 +1,4 @@
-package com.personal.short_url.infrastructure;
+package com.personal.short_url.application.exception;
 
 import lombok.Getter;
 

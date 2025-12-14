@@ -1,4 +1,4 @@
-package com.personal.short_url.api;
+package com.personal.short_url.api.dto;
 
 import org.hibernate.validator.constraints.URL;
 
