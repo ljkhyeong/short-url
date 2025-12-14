@@ -1,2 +1,10 @@
-package com.personal.short_url.infrastructure;public class NotFoundException {
+package com.personal.short_url.infrastructure;
+
+import lombok.Getter;
+
+@Getter
+public class NotFoundException extends RuntimeException{
+	public NotFoundException(String message) {
+		super(message);
+	}
 }
