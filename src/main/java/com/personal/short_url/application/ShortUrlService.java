@@ -29,7 +29,7 @@ public class ShortUrlService {
 	@Transactional
 	public String getOriginalUrl(String shortKey) {
 		return shortUrlRepository.findById(Base62Utils.decodeToId(shortKey))
-			.orElseThrow(() -> new NotFoundException("original URL 미존재"))
+			.orElseThrow(() -> new NotFoundException("존재하지 않는 단축 URL 입니다. key :" + shortKey))
 			.getOriginalUrl();
 	}
 }
