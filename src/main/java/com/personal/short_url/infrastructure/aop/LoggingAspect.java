@@ -3,6 +3,7 @@ package com.personal.short_url.infrastructure.aop;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoggingAspect {
 
-	@Around("execution(* com.personal.short_url.api..*Controller.*(..))")
+	@Pointcut("execution(* com.personal.short_url.api..*Controller.*(..))")
+	public void controllerMethods() {
+	}
+
+	@Around("controllerMethods()")
 	public Object logRequest(ProceedingJoinPoint joinPoint) throws Throwable {
 		long start = System.currentTimeMillis();
 

@@ -36,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### DB 영구저장 ###
+/db/data
