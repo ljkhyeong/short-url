@@ -23,7 +23,14 @@ public class ShortUrl {
 	@Column(nullable = false, length = 2048)
 	private String originalUrl;
 
+	@Column(nullable = false)
+	private Long viewCount = 0L;
+
 	public ShortUrl(String originalUrl) {
 		this.originalUrl = originalUrl;
+	}
+
+	public void increaseViewCount() {
+		viewCount++;
 	}
 }
