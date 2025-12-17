@@ -59,4 +59,20 @@ public class ShortUrlServiceTest {
 		verify(shortUrlRepository, never()).save(any());
 		assertThat(shortKey).isEqualTo(Base62Utils.encodeToKey(100L));
 	}
+
+	@DisplayName("리다이렉트 시 조회수가 1 증가해야 한다")
+	@Test
+	void increaseViewCount() {
+		// given
+		ShortUrl shortUrl = new ShortUrl("https://google.com");
+		ReflectionTestUtils.setField(shortUrl, "id", 100L);
+
+		given(shortUrlRepository.findById(anyLong())).willReturn(Optional.of(shortUrl));
+
+		// when
+		shortUrlService.getOriginalUrl("1C");
+
+		// then
+		assertThat(shortUrl.getViewCount()).isEqualTo(1L);
+	}
 }

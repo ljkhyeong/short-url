@@ -59,7 +59,7 @@ public class ShortUrlIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.shortKey").value("A1b"));
+			.andExpect(jsonPath("$.shortKey").value("1"));
 	}
 
 }
