@@ -29,11 +29,12 @@ public class ShortUrlService {
 	@Transactional
 	public String getOriginalUrl(String shortKey) {
 		long id = Base62Utils.decodeToId(shortKey);
+
+		shortUrlRepository.increaseViewCount(id);
+
 		ShortUrl shortUrl = shortUrlRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException("존재하지 않는 단축 URL 입니다. key :" + shortKey));
 
-		shortUrl.increaseViewCount();
-		
 		return shortUrl.getOriginalUrl();
 	}
 }
