@@ -6,15 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  
 jobs:
   build:
     runs-on: ubuntu-latest # GitHub가 제공하는 리눅스 머신
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -22,10 +25,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # GitHub Actions 환경에서도 도커가 기본 지원되므로 TestContainers가 작동함!
+    # GitHub Actions 환경에서도 도커가 기본 지원되므로 TestContainers가 작동함
     - name: Test with Gradle
       run: ./gradlew test
 
-    # (선택) 테스트가 통과하면 빌드까지 수행
+    # 테스트가 통과하면 빌드까지 수행
     - name: Build with Gradle
       run: ./gradlew build -x test
