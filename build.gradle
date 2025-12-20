@@ -38,6 +38,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-mysql'
 
+	// Redis 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// API 문서 자동화
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 

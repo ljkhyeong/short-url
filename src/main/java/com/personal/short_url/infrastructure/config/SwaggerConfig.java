@@ -1,4 +1,4 @@
-package com.personal.short_url.domain.support;
+package com.personal.short_url.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
