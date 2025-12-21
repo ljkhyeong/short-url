@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.personal.short_url.domain.support.Base62Utils;
@@ -21,6 +23,10 @@ import com.personal.short_url.infrastructure.persistence.ShortUrlRepository;
 public class ShortUrlServiceTest {
 	@Mock
 	ShortUrlRepository shortUrlRepository;
+	@Mock
+	StringRedisTemplate redisTemplate;
+	@Mock
+	ValueOperations<String, String> valueOperations;
 	@InjectMocks
 	ShortUrlService shortUrlService;
 
@@ -64,13 +70,17 @@ public class ShortUrlServiceTest {
 	@Test
 	void increaseViewCount() {
 		// given
+		long id = 100L;
 		ShortUrl shortUrl = new ShortUrl("https://google.com");
-		ReflectionTestUtils.setField(shortUrl, "id", 100L);
+		ReflectionTestUtils.setField(shortUrl, "id", id);
+		String shortKey = Base62Utils.encodeToKey(id);
 
 		given(shortUrlRepository.findById(anyLong())).willReturn(Optional.of(shortUrl));
+		given(redisTemplate.opsForValue()).willReturn(valueOperations);
+		given(valueOperations.get(anyString())).willReturn(null);
 
 		// when
-		shortUrlService.getOriginalUrl("1C");
+		shortUrlService.getOriginalUrl(shortKey);
 
 		// then
 		// TODO: 현재는 엔티티를 안거치고 동기화를 위해 DB에 직접 쿼리를 날리는 로직이라 추후에 수정 필요할듯

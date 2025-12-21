@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.GenericContainer;
@@ -23,9 +24,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.mysql.MySQLContainer;
 
+import com.jayway.jsonpath.JsonPath;
 import com.personal.short_url.api.dto.CreateShortUrlRequest;
 import com.personal.short_url.application.ShortUrlService;
 import com.personal.short_url.domain.entity.ShortUrl;
+import com.personal.short_url.domain.support.Base62Utils;
 import com.personal.short_url.infrastructure.persistence.ShortUrlRepository;
 
 import tools.jackson.databind.ObjectMapper;
@@ -67,15 +70,22 @@ public class ShortUrlIntegrationTest {
 	@Test
 	void testWithRealDataBase() throws Exception {
 		// given
-		CreateShortUrlRequest request = new CreateShortUrlRequest("https://naver.com");
+		String originalUrl = "https://naver.com";
+		CreateShortUrlRequest request = new CreateShortUrlRequest(originalUrl);
 
 		// when
 		// then
-		mockMvc.perform(post("/api/v1/short-links")
+		MvcResult result = mockMvc.perform(post("/api/v1/short-links")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.shortKey").value("1"));
+			.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		String shortKey = JsonPath.read(responseBody, "$.shortKey");
+
+		ShortUrl saved = shortUrlRepository.findByOriginalUrl(originalUrl).orElseThrow();
+		assertThat(Base62Utils.encodeToKey(saved.getId())).isEqualTo(shortKey);
 	}
 
 	@DisplayName("캐시 적용 확인: 2번 조회해도 조회수는 2번 증가해야 한다")
