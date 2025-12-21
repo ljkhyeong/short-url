@@ -56,32 +56,35 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           audience: sts.amazonaws.com
 
-      - name: Debug OIDC claims (sub/aud)
+      - name: Debug OIDC claims (aud/sub)
         shell: bash
         run: |
           set -euo pipefail
-      
-          # audience를 sts.amazonaws.com으로 명시해서 토큰 요청
-          TOKEN_JSON=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+
+          # GitHub가 발급해주는 OIDC 토큰을 (audience=sts.amazonaws.com 으로) 요청
+          TOKEN_JSON=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
-      
+
           OIDC_TOKEN=$(python3 - <<'PY'
-      import sys, json
-      print(json.load(sys.stdin)["value"])
-      PY
+          import sys, json
+          print(json.load(sys.stdin)["value"])
+          PY
           <<< "$TOKEN_JSON")
-      
+
+          export OIDC_TOKEN
+
+          # JWT payload(클레임)만 디코드해서 출력 (토큰 전체는 출력하지 않음)
           python3 - <<'PY'
-      import os, json, base64
-      t=os.environ["OIDC_TOKEN"]
-      payload=t.split(".")[1]
-      payload += "=" * (-len(payload) % 4)
-      data=json.loads(base64.urlsafe_b64decode(payload))
-      keys=["aud","sub","repository","repository_owner","ref","environment","job_workflow_ref","actor"]
-      print(json.dumps({k:data.get(k) for k in keys if k in data}, indent=2, ensure_ascii=False))
-      PY
-        env:
-          OIDC_TOKEN: ${{ env.OIDC_TOKEN }}
+          import os, json, base64
+          t = os.environ["OIDC_TOKEN"]
+          payload = t.split(".")[1]
+          payload += "=" * (-len(payload) % 4)
+          data = json.loads(base64.urlsafe_b64decode(payload))
+          keys = ["aud","sub","repository","repository_owner","ref","environment","job_workflow_ref","actor"]
+          print(json.dumps({k: data.get(k) for k in keys}, indent=2, ensure_ascii=False))
+          PY
+
 
           
       - name: Deploy via SSM Run Command
