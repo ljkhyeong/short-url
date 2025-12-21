@@ -49,13 +49,6 @@ jobs:
       contents: read
       
     steps:
-      - name: Configure AWS Credentials (OIDC AssumeRole)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          audience: sts.amazonaws.com
-
       - name: Debug OIDC claims (aud/sub)
         shell: bash
         run: |
@@ -85,6 +78,15 @@ jobs:
           print(json.dumps({k: data.get(k) for k in keys}, indent=2, ensure_ascii=False))
           PY
 
+
+      - name: Configure AWS Credentials (OIDC AssumeRole)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      
 
           
       - name: Deploy via SSM Run Command
