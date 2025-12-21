@@ -81,6 +81,36 @@ jobs:
             exit 1
           fi
 
+      - name: Print OIDC claims (aud/sub)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$ACTIONS_ID_TOKEN_REQUEST_URL" == *"?"* ]]; then
+            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com"
+          else
+            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}?audience=sts.amazonaws.com"
+          fi
+
+          TOKEN_JSON=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$REQ_URL")
+
+          OIDC_TOKEN=$(python3 - <<'PY'
+          import sys, json
+          print(json.loads(sys.stdin.read())["value"])
+          PY
+                    <<< "$TOKEN_JSON")
+          
+                    python3 - <<'PY'
+          import json, base64
+          t = """'${OIDC_TOKEN}'"""
+          payload = t.split(".")[1]
+          payload += "=" * (-len(payload) % 4)
+          data = json.loads(base64.urlsafe_b64decode(payload))
+          print("aud =", data.get("aud"))
+          print("sub =", data.get("sub"))
+          PY
+
+
 
       - name: Configure AWS Credentials (OIDC AssumeRole)
         uses: aws-actions/configure-aws-credentials@v4
