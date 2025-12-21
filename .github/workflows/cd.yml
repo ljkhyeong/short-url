@@ -49,88 +49,12 @@ jobs:
       contents: read
       
     steps:
-      - name: Debug OIDC token request (status/len)
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "ACTIONS_ID_TOKEN_REQUEST_URL is set: ${#ACTIONS_ID_TOKEN_REQUEST_URL}"
-          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN is set: ${#ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-
-          # request_url에 audience 파라미터를 붙일 때, 이미 ?가 있으면 & 로, 없으면 ? 로 붙임
-          if [[ "$ACTIONS_ID_TOKEN_REQUEST_URL" == *"?"* ]]; then
-            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com"
-          else
-            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}?audience=sts.amazonaws.com"
-          fi
-
-          # 상태코드 + 본문 분리
-          RESP=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            -w "\nHTTP_STATUS:%{http_code}\n" "$REQ_URL")
-
-          STATUS=$(echo "$RESP" | sed -n 's/^HTTP_STATUS://p')
-          BODY=$(echo "$RESP" | sed '/^HTTP_STATUS:/d')
-
-          echo "HTTP status: $STATUS"
-          echo "Body length: ${#BODY}"
-
-          # 정상(200)이 아니면 본문 앞 200자만(마스킹) 보여주기
-          if [[ "$STATUS" != "200" ]]; then
-            echo "Non-200 body preview (masked):"
-            echo "$BODY" | head -c 200 | sed 's/[A-Za-z0-9]/x/g'
-            exit 1
-          fi
-
-      - name: Print OIDC claims (aud/sub) - stable
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          # request_url에 audience 파라미터 붙이기
-          if [[ "$ACTIONS_ID_TOKEN_REQUEST_URL" == *"?"* ]]; then
-            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com"
-          else
-            REQ_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}?audience=sts.amazonaws.com"
-          fi
-
-          TOKEN_JSON=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$REQ_URL")
-
-          # JSON에서 value만 뽑기 (여기서 실패하면 바로 원인 확인 가능)
-          OIDC_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
-
-          echo "OIDC token length: ${#OIDC_TOKEN}"
-          if [[ -z "$OIDC_TOKEN" || "$OIDC_TOKEN" == "null" ]]; then
-            echo "Failed to extract OIDC token from JSON (jq returned empty/null)."
-            echo "JSON preview (masked):"
-            echo "$TOKEN_JSON" | head -c 200 | sed 's/[A-Za-z0-9]/x/g'
-            exit 1
-          fi
-
-          # JWT payload decode해서 aud/sub 출력
-          python3 - <<'PY'
-          import os, json, base64
-          t = os.environ["OIDC_TOKEN"]
-          payload = t.split(".")[1]
-          payload += "=" * (-len(payload) % 4)
-          data = json.loads(base64.urlsafe_b64decode(payload))
-          print("aud =", data.get("aud"))
-          print("sub =", data.get("sub"))
-          PY
-        env:
-          OIDC_TOKEN: ${{ env.OIDC_TOKEN }}
-
-
-
-
       - name: Configure AWS Credentials (OIDC AssumeRole)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
           audience: sts.amazonaws.com
-
-      
-
           
       - name: Deploy via SSM Run Command
         run: |
