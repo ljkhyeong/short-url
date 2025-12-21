@@ -49,7 +49,7 @@ jobs:
       contents: read
       
     steps:
-            - name: Debug OIDC token request (status/len)
+      - name: Debug OIDC token request (status/len)
         shell: bash
         run: |
           set -euo pipefail
