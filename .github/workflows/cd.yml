@@ -65,7 +65,7 @@ jobs:
             --parameters commands='[
               "set -e",
               "cd /home/ubuntu/short-url",
-              "git pull origin main",
+              "sudo -u ubuntu git pull origin main",
               "docker compose pull app",
               "docker compose up -d",
               "docker image prune -f"
