@@ -70,9 +70,8 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy short-url via docker compose" \
             --parameters commands='[
-              "set -e",
+              "set -euxo pipefail",
               "cd /home/ubuntu/short-url",
-              "sudo -u ubuntu git pull origin main",
               "docker compose pull app",
               "docker compose up -d",
               "docker image prune -f"
