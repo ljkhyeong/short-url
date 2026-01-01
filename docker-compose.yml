@@ -30,8 +30,8 @@ services:
       retries: 3
 
   app:
-#    build: .
-    image: jolri24/short-url:latest # Docker Hub에서 가져옴
+    build: .
+#    image: jolri24/short-url:latest # Docker Hub에서 가져옴
     container_name: short-url-app
     ports:
       - "8080:8080"
@@ -41,6 +41,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "prometheus,health,info"
+      MANAGEMENT_METRICS_TAGS_APPLICATION: "short-url"
     depends_on:
       mysql:
         condition: service_healthy
@@ -54,8 +57,10 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml # 설정 파일 마운트
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+#    command:
+#      - '--config.file=/etc/prometheus/prometheus.yml'
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # 호스트 접근 허용
     depends_on:
       - app
 
@@ -63,7 +68,7 @@ services:
     image: grafana/grafana:latest
     container_name: short-url-grafana
     ports:
-      - "3030:3030"
+      - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
