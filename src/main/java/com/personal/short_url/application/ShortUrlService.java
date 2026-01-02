@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShortUrlService {
 
 	private final ShortUrlRepository shortUrlRepository;
+	private final ViewCountService viewCountService;
 	private final StringRedisTemplate redisTemplate;
 
 	@Transactional
@@ -36,8 +37,6 @@ public class ShortUrlService {
 	public String getOriginalUrl(String shortKey) {
 		long id = Base62Utils.decodeToId(shortKey);
 
-		shortUrlRepository.increaseViewCount(id);
-
 		String cacheKey = "url:" + id;
 		String cachedOriginalUrl = redisTemplate.opsForValue().get(cacheKey);
 
@@ -50,6 +49,7 @@ public class ShortUrlService {
 		ShortUrl shortUrl = shortUrlRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException("존재하지 않는 단축 URL 입니다. key :" + shortKey));
 
+		viewCountService.increaseViewCount(shortUrl.getId());
 		String originalUrl = shortUrl.getOriginalUrl();
 
 		redisTemplate.opsForValue().set(cacheKey, originalUrl, Duration.ofMinutes(10));
