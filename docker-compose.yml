@@ -11,7 +11,7 @@ services:
       - "3306:3306"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./db/data:/var/lib/mysql # 데이터 영구 저장
+      - ./db/data:/var/lib/mysql # 데이터 영구저장
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
