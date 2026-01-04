@@ -74,6 +74,8 @@ public class ShortUrlConcurrencyTest {
 
 		latch.await();
 
+		Thread.sleep(10000);
+
 		// then
 		ShortUrl shortUrl = repository.findByOriginalUrl(originalUrl).orElseThrow();
 

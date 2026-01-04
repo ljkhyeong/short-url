@@ -42,6 +42,7 @@ public class ShortUrlService {
 
 		if (cachedOriginalUrl != null) {
 			log.info("[Cache Hit] {}", shortKey);
+			viewCountService.increaseViewCount(id);
 			return cachedOriginalUrl;
 		}
 

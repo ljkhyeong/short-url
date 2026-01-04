@@ -100,6 +100,7 @@ public class ShortUrlIntegrationTest {
 			.andExpect(status().isFound());
 		mockMvc.perform(get("/" + shortKey))
 			.andExpect(status().isFound());
+		Thread.sleep(1000);
 
 		// then
 		ShortUrl shortUrl = shortUrlRepository.findByOriginalUrl(originalUrl).orElseThrow();

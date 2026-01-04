@@ -27,6 +27,8 @@ public class ShortUrlServiceTest {
 	StringRedisTemplate redisTemplate;
 	@Mock
 	ValueOperations<String, String> valueOperations;
+	@Mock
+	ViewCountService viewCountService;
 	@InjectMocks
 	ShortUrlService shortUrlService;
 
@@ -84,6 +86,6 @@ public class ShortUrlServiceTest {
 
 		// then
 		// TODO: 현재는 엔티티를 안거치고 동기화를 위해 DB에 직접 쿼리를 날리는 로직이라 추후에 수정 필요할듯
-		verify(shortUrlRepository, times(1)).increaseViewCount(100L);
+		verify(viewCountService, times(1)).increaseViewCount(100L);
 	}
 }
