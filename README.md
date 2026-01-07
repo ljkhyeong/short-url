@@ -64,3 +64,12 @@ TestContainers를 사용하여 별도의 DB 설치 없이 테스트가 가능합
     - 읽기 요청이 많은 단축 URL 특성상, 자주 조회되는 Key를 메모리에 캐싱하여 RDB 부하를 최소화했습니다.
 - **Spring @Async:**
     - 사용자의 리다이렉트 경험에 영향을 주지 않기 위해, `view_count` 업데이트 로직을 별도 스레드 풀(`ThreadPoolTaskExecutor`)에서 비동기로 처리했습니다.
+---
+## 🎨 Frontend Features
+사용자 편의를 위해 **Thymeleaf**와 **Bootstrap 5**를 기반으로 한 웹 인터페이스를 제공합니다.
+- **Simple UI:** 직관적인 URL 입력 폼 제공
+- **AJAX Integration:** 페이지 새로고침 없는 비동기 단축 URL 생성
+- **UX Enhancement:** 생성된 단축 URL **'원클릭 복사'** 기능
+- **Responsive Design:** 모바일/데스크탑 모두 대응 가능한 반응형 웹
+
+---
