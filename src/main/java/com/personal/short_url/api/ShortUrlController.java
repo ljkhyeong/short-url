@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.personal.short_url.api.dto.CreateShortUrlRequest;
 import com.personal.short_url.api.dto.CreateShortUrlResponse;
@@ -43,8 +44,9 @@ public class ShortUrlController {
 	}
 
 	@GetMapping("/{shortKey}")
-	public ResponseEntity<Void> redirect(@PathVariable String shortKey) {
-		String originalUrl = shortUrlService.getOriginalUrl(shortKey);
+	public ResponseEntity<Void> redirect(@PathVariable String shortKey,
+		@RequestHeader(value = "User-Agent", defaultValue = "unknown") String userAgent) {
+		String originalUrl = shortUrlService.getOriginalUrl(shortKey, userAgent);
 
 		return ResponseEntity
 			.status(HttpStatus.FOUND)

@@ -34,7 +34,7 @@ public class ShortUrlService {
 	}
 
 	@Transactional
-	public String getOriginalUrl(String shortKey) {
+	public String getOriginalUrl(String shortKey, String userAgent) {
 		long id = Base62Utils.decodeToId(shortKey);
 
 		String cacheKey = "url:" + id;
@@ -42,7 +42,7 @@ public class ShortUrlService {
 
 		if (cachedOriginalUrl != null) {
 			log.info("[Cache Hit] {}", shortKey);
-			viewCountService.increaseViewCount(id);
+			viewCountService.recordAndIncreaseViewCount(id, userAgent);
 			return cachedOriginalUrl;
 		}
 
@@ -50,7 +50,7 @@ public class ShortUrlService {
 		ShortUrl shortUrl = shortUrlRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException("존재하지 않는 단축 URL 입니다. key :" + shortKey));
 
-		viewCountService.increaseViewCount(shortUrl.getId());
+		viewCountService.recordAndIncreaseViewCount(shortUrl.getId(), userAgent);
 		String originalUrl = shortUrl.getOriginalUrl();
 
 		redisTemplate.opsForValue().set(cacheKey, originalUrl, Duration.ofMinutes(10));

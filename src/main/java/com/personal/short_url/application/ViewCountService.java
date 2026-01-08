@@ -18,8 +18,9 @@ public class ViewCountService {
 
 	@Async("taskExecutor")
 	@Transactional
-	public void increaseViewCount(Long shortUrlId) {
-		log.info("비동기 조회수 증가 실행 중... Thread: {}", Thread.currentThread().getName());
+	public void recordAndIncreaseViewCount(Long shortUrlId, String userAgent) {
 		shortUrlRepository.increaseViewCount(shortUrlId);
+
+		log.info("Async Logging - ID: {}, UA: {}", shortUrlId, userAgent);
 	}
 }

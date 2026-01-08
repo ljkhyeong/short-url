@@ -82,10 +82,11 @@ public class ShortUrlServiceTest {
 		given(valueOperations.get(anyString())).willReturn(null);
 
 		// when
-		shortUrlService.getOriginalUrl(shortKey);
+		shortUrlService.getOriginalUrl(shortKey, anyString());
 
 		// then
-		// TODO: 현재는 엔티티를 안거치고 동기화를 위해 DB에 직접 쿼리를 날리는 로직이라 추후에 수정 필요할듯
-		verify(viewCountService, times(1)).increaseViewCount(100L);
+		// TODO: 현재는 엔티티를 안거치고 동기화를 위해 DB에 직접 쿼리를 날리는 로직이라 추후에 수정 필요할듯,
+		// TODO: 그리고 이런 호출검증 테스트는 안좋음. 리팩토링 시 수정해야할 가능성이 높기때문에. 결과위주로 테스트하자.
+		verify(viewCountService, times(1)).recordAndIncreaseViewCount(100L, anyString());
 	}
 }
